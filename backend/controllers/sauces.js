@@ -2,7 +2,7 @@ const Sauce = require('../models/sauces');
 
 //Création de la sauce
 exports.createSauce = (req, res, next) => {
-    //delete req.body.userId; 
+    //delete req.body._id; 
 console.log(req.sauce);
     const sauceObject = JSON.parse(req.body.sauce);
     
@@ -19,21 +19,21 @@ console.log(req.sauce);
 
 //Modification de la sauce
 exports.modifySauce = (req, res, next) => {
-    Sauce.updateOne({ userId: req.params.id }, { ...req.body, userId: req.params.id })
+    Sauce.updateOne({ _id: req.params.id }, { ...req.body, _id: req.params.id })
       .then(() => res.status(200).json({ message: 'Sauce modifiée !'}))
       .catch(error => res.status(400).json({ error }));
 }; 
 
 //Suppression de la sauce
 exports.deleteSauce =  (req, res, next) => {
-    Sauce.deleteOne({ userId: req.params.id })
+    Sauce.deleteOne({ _id: req.params.id })
       .then(() => res.status(200).json({ message: 'Sauce supprimée !'}))
       .catch(error => res.status(400).json({ error }));
 };
 
 //Affichage de la sauce
 exports.getOneSauce = (req, res, next) => {
-    Sauce.findOne({ userId: req.params.id })
+    Sauce.findOne({ _id: req.params.id })
       .then(sauce => res.status(200).json(sauce))
       .catch(error => res.status(404).json({ error }));
 };
