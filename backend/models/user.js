@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+
 const uniqueValidator = require('mongoose-unique-validator');
 
 //Schema User (email-mdp)

@@ -1,34 +1,46 @@
+const fs = require('fs'); //application pour modifier système de fichiers
 const Sauce = require('../models/sauces');
+const User = require('../models/user');
+
 
 //Création de la sauce
 exports.createSauce = (req, res, next) => {
-    //delete req.body._id; 
-console.log(req.sauce);
-    const sauceObject = JSON.parse(req.body.sauce);
-    
-    delete sauceObject.id;
-
-    const sauce = new Sauce({
-      imageUrl: `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdrmmMvVy-UfJwLLxEuDUNIoIa8R6dYTUvyINbrLwKEazjhjidXTxy5do_8vxOPGPX7_RyaiU&usqp=CAc`,
-      ...sauceObject
-    });
-    sauce.save()
-      .then(() => res.status(201).json({ message: 'Sauce enregistrée !'}))
-      .catch(error => {console.log(error); res.status(400).json({ error })});
+  console.log(req.Sauce);
+  const sauceObject = JSON.parse(req.body.sauce); 
+  delete sauceObject._id;
+  const sauce = new Sauce({
+    ...sauceObject,
+    imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+  });
+  sauce.save()
+    .then(() => res.status(201).json({ message: 'Sauce enregistrée !'}))
+    .catch(error => {console.log(error); res.status(400).json({ error })});
 };
 
 //Modification de la sauce
 exports.modifySauce = (req, res, next) => {
-    Sauce.updateOne({ _id: req.params.id }, { ...req.body, _id: req.params.id })
-      .then(() => res.status(200).json({ message: 'Sauce modifiée !'}))
-      .catch(error => res.status(400).json({ error }));
+  const sauceObject = req.file ?
+    {
+    ...JSON.parse(req.body.sauce),
+    imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+    } : { ...req.body };
+  Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
+    .then(() => res.status(200).json({ message: 'Sauce modifiée !'}))
+    .catch(error => res.status(400).json({ error }));
 }; 
 
 //Suppression de la sauce
 exports.deleteSauce =  (req, res, next) => {
+  Sauce.findOne({ _id: req.params.id })
+  .then(thing => {
+    const filename = thing.imageUrl.split('/images/')[1];
+    fs.unlink(`images/${filename}`, () => {
     Sauce.deleteOne({ _id: req.params.id })
       .then(() => res.status(200).json({ message: 'Sauce supprimée !'}))
       .catch(error => res.status(400).json({ error }));
+    });
+  })
+  .catch(error => res.status(500).json({ error }));
 };
 
 //Affichage de la sauce

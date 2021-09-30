@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 //Schema Sauce (nom, marque, ...)
 const saucesSchema = mongoose.Schema({
-    _id : { type: String, required: true },
+    Userid : { type: String, required: true },
     name : { type: String, required: true },
     manufacturer : { type: String, required: true },
     description : { type: String, required: true },
