@@ -1,33 +1,36 @@
+/*communication avec le serveur*/
 const express = require('express');
-const bodyParser = require('body-parser'); //application body-parser
 const mongoose = require('mongoose'); //application MongoDB
-const path = require('path');
+const app = express(); /*application Express*/
 
-const saucesRoutes = require('./routes/sauces');
-const userRoutes = require('./routes/user');
-
-const app = express();
-
-//connexion base de données mongoose
+/*connection à MongoDB*/
 mongoose.connect('mongodb+srv://Renaud91:Django9119@hottakes.1y8uj.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
   { useNewUrlParser: true,
     useUnifiedTopology: true })
-  .then(() => console.log('Connexion à MongoDB réussie !'))
-  .catch(() => console.log('Connexion à MongoDB échouée !'));
+  .then(() => console.log('Connexion à MongoDB réussie'))
+  .catch(() => console.log('Connexion à MongoDB échouée'));
 
-//permet l'accès à l'API depuis toutes origines, ajouter headers, envoie requete
+
+/*middleware communication des différent port(localhost) possible*/
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*'); //accéder à notre API depuis n'importe quelle origine
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization'); //ajouter les headers mentionnés aux requêtes envoyées vers notre API
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS'); //envoyer des requêtes avec les méthodes mentionnées
-    next();
+  next();
 });
-  
-app.use(bodyParser.json());
 
+/*parle en json*/
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+const path = require('path');
 app.use('/images', express.static(path.join(__dirname, 'images')));
+
+const saucesRoutes = require('./routes/sauces');
+app.use('/api/sauces', saucesRoutes);
+
+const userRoutes = require('./routes/user');
 app.use('/api/sauces', saucesRoutes);
 app.use('/api/auth', userRoutes);
 
 module.exports = app;
-

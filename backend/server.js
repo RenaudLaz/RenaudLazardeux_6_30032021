@@ -1,26 +1,19 @@
-const http = require('http');
+/*créer un serveur Node*/
+const http = require('http'); //package HTTP natif de Node
 const app = require('./app');
 
-//Renvoie un port valide
-const normalizePort = val => {
+const normalizePort = val => { //normalizePort : renvoie un port valide
   const port = parseInt(val, 10);
-
-  if (isNaN(port)) {
-    return val;
-  }
-  if (port >= 0) {
-    return port;
-  }
+  if (isNaN(port)) {return val;}
+  if (port >= 0) {return port;}
   return false;
 };
-const port = normalizePort(process.env.PORT || '3000');
+
+const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
-//Recherche les erreurs et les traites
-const errorHandler = error => {
-  if (error.syscall !== 'listen') {
-    throw error;
-  }
+const errorHandler = error => { //errorHandler : recherche les différentes erreurs et les gère de manière appropriée. Elle est ensuite enregistrée dans le serveur 
+  if (error.syscall !== 'listen') {throw error;}
   const address = server.address();
   const bind = typeof address === 'string' ? 'pipe ' + address : 'port: ' + port;
   switch (error.code) {
@@ -46,4 +39,4 @@ server.on('listening', () => {
   console.log('Listening on ' + bind);
 });
 
-server.listen(port);
+server.listen(port); //se démarre avec 'node server' ou 'nodemon server' 
