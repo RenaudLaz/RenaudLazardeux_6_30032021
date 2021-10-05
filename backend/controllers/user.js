@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt'); //application bcrypt
 const User = require('../models/user');
 
 exports.signup = (req, res, next) => {
+
     bcrypt.hash(req.body.password, 10) //« saler » le mot de passe 10 fois
         .then(hash => {
             const user = new User({

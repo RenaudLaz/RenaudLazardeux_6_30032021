@@ -8,10 +8,6 @@ const MIME_TYPES = {
   'image/png': 'png'
 };
 
-/*création docier images*/
-mkdirp('./images').then(made =>
-    console.log(`made directories, starting with ${made}`));
-
 /*enregistrer les images*/
 const storage = multer.diskStorage({
     destination: (req, file, callback) => {
